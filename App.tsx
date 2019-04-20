@@ -21,10 +21,14 @@ const instructions = Platform.select({
 
 interface Props {}
 export default class App extends Component<Props> {
-  render() {
+
+  async componentDidMount() {
     if (Platform.OS === 'android') {
-      requestMicPermission()
+      await requestMicPermission()
     }
+  }
+
+  render() {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>Welcome to React Native!</Text>

@@ -1,5 +1,6 @@
 import {PermissionsAndroid} from 'react-native';
 
+
 async function requestMicPermission() {
   try {
     const granted = await PermissionsAndroid.request(
@@ -23,3 +24,5 @@ async function requestMicPermission() {
     console.warn(err);
   }
 }
+
+export { requestMicPermission }
