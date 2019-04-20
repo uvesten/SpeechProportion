@@ -1,4 +1,4 @@
-on: 2
+version: 2
 jobs:
   node:
     working_directory: ~/speech-proportion
@@ -57,6 +57,9 @@ jobs:
 
       - restore_cache:
           key: bundle-v1-{{ checksum "Gemfile.lock" }}-{{ arch }}
+
+      # Need to upgrade bundler in this docker image
+      - run: gem install bundler
 
       - run: bundle install
 
