@@ -1,0 +1,3 @@
+rootProject.name = 'SpeechProportion'
+
+include ':app'

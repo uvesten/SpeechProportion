@@ -1,0 +1,29 @@
+{
+  "name": "SpeechProportion",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "react": "16.8.3",
+    "react-native": "0.59.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/runtime": "^7.4.3",
+    "@types/jest": "latest",
+    "@types/react": "latest",
+    "@types/react-native": "latest",
+    "@types/react-test-renderer": "latest",
+    "babel-jest": "^24.7.1",
+    "jest": "^24.7.1",
+    "metro-react-native-babel-preset": "^0.53.1",
+    "react-test-renderer": "16.8.3",
+    "typescript": "latest"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
