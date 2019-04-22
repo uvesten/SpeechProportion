@@ -17,11 +17,14 @@ async function requestMicPermission() {
     );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
       console.log('You can use the microphone');
+      return true
     } else {
       console.log('Microphone permission denied');
+      return false
     }
   } catch (err) {
     console.warn(err);
+    return false
   }
 }
 
