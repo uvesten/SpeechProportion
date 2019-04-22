@@ -138,6 +138,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-svg')
     implementation project(':react-native-microphone-dsp')
     implementation project(':react-native-fs')
     implementation fileTree(dir: "libs", include: ["*.jar"])

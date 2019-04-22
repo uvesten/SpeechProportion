@@ -20,9 +20,14 @@ import {
   TouchableHighlight,
 } from 'react-native'
 import { requestMicPermission } from './MicPermission'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import {
+  faCoffee,
+  faAssistiveListeningSystems,
+} from '@fortawesome/free-solid-svg-icons'
+
 import ProportionView from './ProportionView'
 //import { soundWriterListenerFactory } from './FileWriter'
-
 import MicStream from 'react-native-microphone-dsp'
 import { calculateRMS } from './RMSCalculator'
 
@@ -64,8 +69,12 @@ export default class App extends Component<Props> {
   render() {
     return (
       <View style={styles.container}>
+        <FontAwesomeIcon
+          style={styles.ear}
+          size={128}
+          icon={faAssistiveListeningSystems}
+        />
         <Text style={styles.welcome}>Welcome to SpeechProportion!</Text>
-
         <Modal
           animationType="slide"
           transparent={false}
@@ -106,6 +115,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     margin: 10,
+  },
+  ear: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 30,
   },
   instructions: {
     textAlign: 'center',

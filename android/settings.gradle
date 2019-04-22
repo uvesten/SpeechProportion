@@ -1,4 +1,6 @@
 rootProject.name = 'SpeechProportion'
+include ':react-native-svg'
+project(':react-native-svg').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-svg/android')
 include ':react-native-microphone-dsp'
 project(':react-native-microphone-dsp').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-microphone-dsp/android')
 include ':react-native-fs'
