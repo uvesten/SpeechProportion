@@ -20,9 +20,11 @@ import {
   TouchableHighlight,
 } from 'react-native'
 import { requestMicPermission } from './MicPermission'
-import { soundWriterListenerFactory } from './FileWriter'
+import ProportionView from './ProportionView'
+//import { soundWriterListenerFactory } from './FileWriter'
 
-import MicStream from 'react-native-microphone-stream'
+import MicStream from 'react-native-microphone-dsp'
+import { calculateRMS } from './RMSCalculator'
 
 interface Props {}
 export default class App extends Component<Props> {
@@ -35,20 +37,19 @@ export default class App extends Component<Props> {
     this.setState({ modalVisible: visible })
   }
 
-  async startListening() {
+  startListening = async () => {
     if (Platform.OS === 'android') {
       await requestMicPermission()
     }
 
-    const filewriter = soundWriterListenerFactory('tmp.pcm')
-
-    const listener = MicStream.addListener(data => {
-      filewriter(data)
+    const listener = MicStream.addListener(async data => {
+      console.log(await calculateRMS(data))
     })
+
     MicStream.init({
-      bufferSize: 4096,
-      sampleRate: 44100,
-      bitsPerChannel: 16,
+      bufferSize: 1024,
+      sampleRate: 11025,
+      bitsPerChannel: 8,
       channelsPerFrame: 1,
     })
     MicStream.start()
@@ -73,18 +74,18 @@ export default class App extends Component<Props> {
             Alert.alert('Modal has been closed.')
           }}
         >
-          <View style={{ marginTop: 22 }}>
+          <View style={styles.container}>
             <View>
-              <Text>Hello World!</Text>
+              <Text style={styles.welcome}>Listening!</Text>
 
-              <TouchableHighlight
+              <ProportionView />
+              <Button
+                title="Stop listening"
                 onPress={() => {
                   this.setModalVisible(!this.state.modalVisible)
                   App.stopListening()
                 }}
-              >
-                <Text>Hide Modal</Text>
-              </TouchableHighlight>
+              />
             </View>
           </View>
         </Modal>

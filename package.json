@@ -10,7 +10,7 @@
     "react": "16.8.3",
     "react-native": "0.59.5",
     "react-native-fs": "^2.13.3",
-    "react-native-microphone-stream": "git://github.com/chadsmith/react-native-microphone-stream.git"
+    "react-native-microphone-dsp": "https://github.com/uvesten/react-native-microphone-dsp.git"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",

@@ -13,12 +13,19 @@ var RNFS = require('react-native-fs')
 function soundWriterListenerFactory(inPath: string) {
   let notWritten = true
   let path = RNFS.DocumentDirectoryPath + '/' + inPath
-  return async (data: any) => {
-    if (notWritten) {
-      await RNFS.writeFile(path, data, 'base64')
-      notWritten = false
-    }
-    await RNFS.appendFile(path, data, 'base64')
+  return async (data: readableNativeArray) => {
+    //com.facebook.react.bridge.
+
+    console.log(data.length)
+    console.log(typeof data[0])
+    console.log(data[0])
+    console.log(data[1])
+
+    //if (notWritten) {
+    //  await RNFS.writeFile(path, data, 'base64')
+    //  notWritten = false
+    //}
+    //await RNFS.appendFile(path, data, 'base64')
   }
 }
 

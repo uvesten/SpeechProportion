@@ -4297,9 +4297,9 @@ react-native-fs@^2.13.3:
     base-64 "^0.1.0"
     utf8 "^2.1.1"
 
-"react-native-microphone-stream@git://github.com/chadsmith/react-native-microphone-stream.git":
+"react-native-microphone-dsp@https://github.com/uvesten/react-native-microphone-dsp.git":
   version "0.0.1"
-  resolved "git://github.com/chadsmith/react-native-microphone-stream.git#c3104fa09dfa1faad5a60a16b63cd64afc9fbb65"
+  resolved "https://github.com/uvesten/react-native-microphone-dsp.git#a9744e986e14f12c271d9140ed4d9a6be24e2f61"
 
 react-native@0.59.5:
   version "0.59.5"
