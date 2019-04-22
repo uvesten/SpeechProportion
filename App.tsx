@@ -20,6 +20,7 @@ import {
   TouchableHighlight,
 } from 'react-native'
 import { requestMicPermission } from './MicPermission'
+import { soundWriterListenerFactory } from './FileWriter'
 
 import MicStream from 'react-native-microphone-stream'
 
@@ -39,10 +40,10 @@ export default class App extends Component<Props> {
       await requestMicPermission()
     }
 
-    const listener = MicStream.addListener(data => {
-      console.log(typeof data)
+    const filewriter = soundWriterListenerFactory('tmp.pcm')
 
-      console.log(data)
+    const listener = MicStream.addListener(data => {
+      filewriter(data)
     })
     MicStream.init({
       bufferSize: 4096,
