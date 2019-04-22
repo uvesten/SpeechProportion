@@ -4289,6 +4289,10 @@ react-is@^16.8.1, react-is@^16.8.3, react-is@^16.8.4:
   version "16.8.6"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.6.tgz#5bbc1e2d29141c9fbdfed456343fe2bc430a6a16"
 
+"react-native-audio@https://github.com/jsierles/react-native-audio.git#f223414c6a965d24cea74179194613cf37e566ef":
+  version "4.2.2"
+  resolved "https://github.com/jsierles/react-native-audio.git#f223414c6a965d24cea74179194613cf37e566ef"
+
 react-native-fs@^2.13.3:
   version "2.13.3"
   resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.13.3.tgz#a422f0ecd8a093a7e99d8d51ff51440e090a18a8"

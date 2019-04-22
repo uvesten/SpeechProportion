@@ -20,44 +20,93 @@ import {
   TouchableHighlight,
 } from 'react-native'
 import { requestMicPermission } from './MicPermission'
-import { soundWriterListenerFactory } from './FileWriter'
 
-import MicStream from 'react-native-microphone-stream'
+import { AudioRecorder, AudioUtils } from 'react-native-audio'
 
 interface Props {}
 export default class App extends Component<Props> {
   state = {
     modalVisible: false,
     listening: false,
+    currentTime: 0.0,
+    recording: false,
+    paused: false,
+    stoppedRecording: false,
+    finished: false,
+    audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac',
+    hasPermission: undefined,
   }
 
   setModalVisible(visible: boolean) {
     this.setState({ modalVisible: visible })
   }
 
-  async startListening() {
+  prepareRecordingPath = async (audioPath: string) => {
+    await AudioRecorder.prepareRecordingAtPath(audioPath),
+      {
+        SampleRate: 8000,
+        Channels: 1,
+        AudioQuality: 'Low',
+        AudioEncoding: 'aac',
+        AudioEncodingBitRate: 12200,
+      }
+  }
+
+  startListening = async () => {
     if (Platform.OS === 'android') {
       await requestMicPermission()
     }
 
-    const filewriter = soundWriterListenerFactory('tmp.pcm')
+    let isAuthorised = await AudioRecorder.requestAuthorization()
 
-    const listener = MicStream.addListener(data => {
-      filewriter(data)
-    })
-    MicStream.init({
-      bufferSize: 4096,
-      sampleRate: 44100,
-      bitsPerChannel: 16,
-      channelsPerFrame: 1,
-    })
-    MicStream.start()
+    this.setState({ hasPermission: isAuthorised })
 
+    if (!isAuthorised) {
+      console.log('we did not get authorized for recording')
+      return
+    }
+
+    await this.prepareRecordingPath(this.state.audioPath)
+
+    AudioRecorder.onProgress = data => {
+      this.setState({ currentTime: Math.floor(data.currentTime) })
+    }
+
+    AudioRecorder.onFinished = data => {
+      // Android callback comes in the form of a promise instead.
+      if (Platform.OS === 'ios') {
+        this._finishRecording(
+          data.status === 'OK',
+          data.audioFileURL,
+          data.audioFileSize
+        )
+      }
+    }
+
+    const filePath = await AudioRecorder.startRecording()
     await this.setModalVisible(true)
   }
 
-  static async stopListening() {
-    MicStream.stop()
+  _finishRecording(didSucceed: boolean, filePath: any, fileSize: undefined) {
+    this.setState({ finished: didSucceed })
+    console.log(
+      `Finished recording of duration ${
+        this.state.currentTime
+      } seconds at path: ${filePath} and size of ${fileSize || 0} bytes`
+    )
+  }
+
+  async stopListening() {
+    try {
+      const filePath = await AudioRecorder.stopRecording()
+
+      if (Platform.OS === 'android') {
+        this._finishRecording(true, filePath)
+      }
+      return filePath
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   render() {
@@ -69,22 +118,16 @@ export default class App extends Component<Props> {
           animationType="slide"
           transparent={false}
           visible={this.state.modalVisible}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.')
-          }}
         >
-          <View style={{ marginTop: 22 }}>
+          <View style={styles.container}>
             <View>
-              <Text>Hello World!</Text>
-
-              <TouchableHighlight
+              <Button
+                title="Stop listening"
                 onPress={() => {
                   this.setModalVisible(!this.state.modalVisible)
-                  App.stopListening()
+                  this.stopListening()
                 }}
-              >
-                <Text>Hide Modal</Text>
-              </TouchableHighlight>
+              />
             </View>
           </View>
         </Modal>
