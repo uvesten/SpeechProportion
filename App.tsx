@@ -57,7 +57,6 @@ export default class App extends Component<Props> {
       bitsPerChannel: 8,
       channelsPerFrame: 1,
     })
-    await MicStream.start()
 
     this.setState({ canListen: true })
     await this.setModalVisible(true)
@@ -87,6 +86,11 @@ export default class App extends Component<Props> {
           <View style={styles.container}>
             <View>
               <Text style={styles.welcome}>Listening!</Text>
+              <FontAwesomeIcon
+                style={styles.ear}
+                size={128}
+                icon={faAssistiveListeningSystems}
+              />
               {this.state.canListen === true && <ProportionView />}
               <Button
                 title="Stop listening"

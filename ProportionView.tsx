@@ -80,22 +80,22 @@ const proportionCounterFactory = () => {
     speaking: boolean
   ): Promise<{ speech: number; silence: number }> => {
     const now = Date.now()
-    const twoSecsAgo = now - 2000
+    const twoSecsInPast = now - 2000
 
     if (speaking) {
-      speech.push(now)
+      speech.unshift(now)
     } else {
-      silence.push(now)
+      silence.unshift(now)
     }
 
     if (silence.length > 0) {
-      while (silence.peekBack() < twoSecsAgo) {
+      while (silence.peekBack() < twoSecsInPast) {
         silence.pop()
       }
     }
 
     if (speech.length > 0) {
-      while (speech.peekBack() < twoSecsAgo) {
+      while (speech.peekBack() < twoSecsInPast) {
         speech.pop()
       }
     }
