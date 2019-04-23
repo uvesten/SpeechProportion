@@ -1,20 +1,39 @@
 import React, { Component } from 'react'
 import MicStream from 'react-native-microphone-dsp'
 import { calculateRMS } from './RMSCalculator'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Platform } from 'react-native'
 import { soundWriterListenerFactory } from './FileWriter'
+import { bool, number } from 'prop-types'
+import Denque from 'denque'
 interface Props {}
 export default class ProportionView extends Component<Props> {
   listener: any
   constructor(props: Readonly<Props>) {
     super(props)
-    this.state = { rms: 0 }
+    this.state = { silence: 0, speech: 0 }
+
+    const proportionCounter = proportionCounterFactory()
 
     this.listener = MicStream.addListener(async data => {
       let rms = await calculateRMS(data)
-      this.setState({ rms })
+
+      const speech = Platform.select({
+        ios: 160 > rms ? true : false,
+        android: 30500 > rms ? true : false,
+      })
+
+      //console.log(speech)
+      const proportions = await proportionCounter(speech)
+      console.log(proportions)
+      this.setState({
+        silence: proportions.silence,
+        speech: proportions.speech,
+      })
     })
   }
+
+  // cutoff ios ~ 170
+  // cutoff android ~ 31000
 
   async componentDidMount() {
     await MicStream.start()
@@ -28,7 +47,8 @@ export default class ProportionView extends Component<Props> {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>RMS is {this.state.rms} </Text>
+        <Text style={styles.welcome}>Speech is {this.state.speech} </Text>
+        <Text style={styles.welcome}>Silence is {this.state.silence} </Text>
       </View>
     )
   }
@@ -51,3 +71,37 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 })
+
+const proportionCounterFactory = () => {
+  const speech = new Denque()
+  const silence = new Denque()
+
+  const proportionCounter = async (
+    speaking: boolean
+  ): Promise<{ speech: number; silence: number }> => {
+    const now = Date.now()
+    const twoSecsAgo = now - 2000
+
+    if (speaking) {
+      speech.push(now)
+    } else {
+      silence.push(now)
+    }
+
+    if (silence.length > 0) {
+      while (silence.peekBack() < twoSecsAgo) {
+        silence.pop()
+      }
+    }
+
+    if (speech.length > 0) {
+      while (speech.peekBack() < twoSecsAgo) {
+        speech.pop()
+      }
+    }
+
+    return { speech: speech.length, silence: silence.length }
+  }
+
+  return proportionCounter
+}
