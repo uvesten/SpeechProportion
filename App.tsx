@@ -24,18 +24,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import {
   faCoffee,
   faAssistiveListeningSystems,
+  faCaretSquareLeft,
 } from '@fortawesome/free-solid-svg-icons'
 
 import ProportionView from './ProportionView'
 //import { soundWriterListenerFactory } from './FileWriter'
 import MicStream from 'react-native-microphone-dsp'
-import { calculateRMS } from './RMSCalculator'
 
 interface Props {}
 export default class App extends Component<Props> {
   state = {
     modalVisible: false,
     listening: false,
+    canListen: false,
   }
 
   setModalVisible(visible: boolean) {
@@ -44,21 +45,21 @@ export default class App extends Component<Props> {
 
   startListening = async () => {
     if (Platform.OS === 'android') {
-      await requestMicPermission()
+      let result = await requestMicPermission()
+      if (!result) {
+        return
+      }
     }
 
-    const listener = MicStream.addListener(async data => {
-      console.log(await calculateRMS(data))
-    })
-
-    MicStream.init({
+    await MicStream.init({
       bufferSize: 1024,
       sampleRate: 11025,
       bitsPerChannel: 8,
       channelsPerFrame: 1,
     })
-    MicStream.start()
+    await MicStream.start()
 
+    this.setState({ canListen: true })
     await this.setModalVisible(true)
   }
 
@@ -86,8 +87,7 @@ export default class App extends Component<Props> {
           <View style={styles.container}>
             <View>
               <Text style={styles.welcome}>Listening!</Text>
-
-              <ProportionView />
+              {this.state.canListen === true && <ProportionView />}
               <Button
                 title="Stop listening"
                 onPress={() => {

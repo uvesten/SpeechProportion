@@ -1,21 +1,38 @@
 import React, { Component } from 'react'
-import { Platform, StyleSheet, Text, View } from 'react-native'
-
+import MicStream from 'react-native-microphone-dsp'
+import { calculateRMS } from './RMSCalculator'
+import { View, Text, StyleSheet } from 'react-native'
+import { soundWriterListenerFactory } from './FileWriter'
 interface Props {}
 export default class ProportionView extends Component<Props> {
-  //async componentDidMount() {
-  //  console.log(this.props.listener)
-  //}
+  listener: any
+  constructor(props: Readonly<Props>) {
+    super(props)
+    this.state = { rms: 0 }
+
+    this.listener = MicStream.addListener(async data => {
+      let rms = await calculateRMS(data)
+      this.setState({ rms })
+    })
+  }
+
+  async componentDidMount() {
+    await MicStream.start()
+  }
+
+  async componentWillUnmount() {
+    MicStream.stop()
+    this.listener.remove()
+  }
 
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>RMS is </Text>
+        <Text style={styles.welcome}>RMS is {this.state.rms} </Text>
       </View>
     )
   }
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
