@@ -3,14 +3,16 @@ import MicStream from 'react-native-microphone-dsp'
 import { calculateRMS } from './RMSCalculator'
 import { View, Text, StyleSheet, Platform } from 'react-native'
 import { soundWriterListenerFactory } from './FileWriter'
-import { bool, number } from 'prop-types'
+import { bool, number, string } from 'prop-types'
 import Denque from 'denque'
+import { VictoryPie } from 'victory-native'
+
 interface Props {}
 export default class ProportionView extends Component<Props> {
   listener: any
   constructor(props: Readonly<Props>) {
     super(props)
-    this.state = { silence: 0, speech: 0 }
+    this.state = { data: [{ x: 'Speech', y: 0 }, { x: 'Silence', y: 0 }] }
 
     const proportionCounter = proportionCounterFactory()
 
@@ -24,14 +26,14 @@ export default class ProportionView extends Component<Props> {
 
       //console.log(speech)
       const proportions = await proportionCounter(speech)
-      console.log(proportions)
       this.setState({
-        silence: proportions.silence,
-        speech: proportions.speech,
+        data: [
+          { x: 'Speech', y: proportions.speech },
+          { x: 'Silence', y: proportions.silence },
+        ],
       })
     })
   }
-
   // cutoff ios ~ 170
   // cutoff android ~ 31000
 
@@ -46,10 +48,14 @@ export default class ProportionView extends Component<Props> {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Speech is {this.state.speech} </Text>
-        <Text style={styles.welcome}>Silence is {this.state.silence} </Text>
-      </View>
+      <VictoryPie
+        height={400}
+        data={this.state.data}
+        colorScale={['orange', 'cyan']}
+        animate={{
+          duration: 250,
+        }}
+      />
     )
   }
 }

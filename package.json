@@ -16,7 +16,8 @@
     "react-native": "0.59.5",
     "react-native-fs": "^2.13.3",
     "react-native-microphone-dsp": "https://github.com/uvesten/react-native-microphone-dsp.git",
-    "react-native-svg": "^9.4.0"
+    "react-native-svg": "^9.4.0",
+    "victory-native": "^32.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",

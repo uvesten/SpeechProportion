@@ -85,7 +85,6 @@ export default class App extends Component<Props> {
         >
           <View style={styles.container}>
             <View>
-              <Text style={styles.welcome}>Listening!</Text>
               <FontAwesomeIcon
                 style={styles.ear}
                 size={128}
@@ -123,6 +122,7 @@ const styles = StyleSheet.create({
   ear: {
     fontSize: 20,
     textAlign: 'center',
+    alignSelf: 'center',
     margin: 30,
   },
   instructions: {
