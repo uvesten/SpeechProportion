@@ -26,9 +26,7 @@ import {
   faAssistiveListeningSystems,
   faCaretSquareLeft,
 } from '@fortawesome/free-solid-svg-icons'
-
 import ProportionView from './ProportionView'
-//import { soundWriterListenerFactory } from './FileWriter'
 import MicStream from 'react-native-microphone-dsp'
 
 interface Props {}
@@ -62,10 +60,6 @@ export default class App extends Component<Props> {
     await this.setModalVisible(true)
   }
 
-  static async stopListening() {
-    MicStream.stop()
-  }
-
   render() {
     return (
       <View style={styles.container}>
@@ -95,7 +89,6 @@ export default class App extends Component<Props> {
                 title="Stop listening"
                 onPress={() => {
                   this.setModalVisible(!this.state.modalVisible)
-                  App.stopListening()
                 }}
               />
             </View>
